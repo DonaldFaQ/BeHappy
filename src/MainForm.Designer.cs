@@ -227,6 +227,7 @@ namespace BeHappy
             this.btnPreview.CheckBoxText = "Omit encoder script";
             this.btnPreview.Checked = false;
             this.btnPreview.Location = new System.Drawing.Point(15, 89);
+            this.btnPreview.MinimumSize = new System.Drawing.Size(80, 30);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(142, 38);
             this.btnPreview.TabIndex = 1;
@@ -240,6 +241,7 @@ namespace BeHappy
             this.btnEnqueue.CheckBoxText = "Start jobs instantly";
             this.btnEnqueue.Checked = false;
             this.btnEnqueue.Location = new System.Drawing.Point(15, 133);
+            this.btnEnqueue.MinimumSize = new System.Drawing.Size(80, 30);
             this.btnEnqueue.Name = "btnEnqueue";
             this.btnEnqueue.Size = new System.Drawing.Size(142, 38);
             this.btnEnqueue.TabIndex = 0;
@@ -1122,9 +1124,9 @@ namespace BeHappy
             this.linkLabel1.Size = new System.Drawing.Size(156, 13);
             this.linkLabel1.TabIndex = 26;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Tag = "https://www.github.com/jones1913/BeHappy";
+            this.linkLabel1.Tag = "https://github.com/Kurtnoise-zeus/BeHappy";
             this.linkLabel1.Text = "BeHappy workspace @ GitHub";
-            this.toolTip1.SetToolTip(this.linkLabel1, "https://www.github.com/jones1913/BeHappy");
+            this.toolTip1.SetToolTip(this.linkLabel1, "https://github.com/Kurtnoise-zeus/BeHappy");
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelUrlLinkClicked);
             this.linkLabel1.MouseEnter += new System.EventHandler(this.LinkLabelMouseEnter);
             this.linkLabel1.MouseLeave += new System.EventHandler(this.LinkLabelMouseLeave);
