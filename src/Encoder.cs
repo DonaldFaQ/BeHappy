@@ -81,10 +81,10 @@ namespace BeHappy
 
         private void audioStreamInfo(AviSynthClip x) {
             if(x.SampleType == AudioSampleType.FLOAT) {                 // New for float output
-                raiseEvent(m_job, new EncoderCallbackEventArgs(string.Format("Channels={0}, BitsPerSample={1} float, SampleRate={2}Hz", x.ChannelsCount, x.BitsPerSample, x.AudioSampleRate)));
+                raiseEvent(m_job, new EncoderCallbackEventArgs(string.Format("Channels={0}, BitsPerSample={1} float, SampleRate={2}Hz, ChannelMask={3}", x.ChannelsCount, x.BitsPerSample, x.AudioSampleRate, x.ChannelMask)));
             }
             else {
-                raiseEvent(m_job, new EncoderCallbackEventArgs(string.Format("Channels={0}, BitsPerSample={1} int, SampleRate={2}Hz", x.ChannelsCount, x.BitsPerSample, x.AudioSampleRate)));
+                raiseEvent(m_job, new EncoderCallbackEventArgs(string.Format("Channels={0}, BitsPerSample={1} int, SampleRate={2}Hz, ChannelMask={3}", x.ChannelsCount, x.BitsPerSample, x.AudioSampleRate, x.ChannelMask)));
             }
         }
 
@@ -148,7 +148,7 @@ namespace BeHappy
                 string sTempFileName = saveScriptToTempFile();
                 try {
                     using(AviSynthScriptEnvironment env = new AviSynthScriptEnvironment()) {
-                        using(AviSynthClip x = env.ParseScript(m_script)) { //.OpenScriptFile(sTempFileName))
+                        using(AviSynthClip x = AviSynthScriptEnvironment.ParseScript(m_script)) { //.OpenScriptFile(sTempFileName))
                             if(0 == x.SamplesCount)
                                 throw new ApplicationException("Can't find audio stream!");
                             audioStreamFound();
@@ -160,7 +160,8 @@ namespace BeHappy
                             int frameBufferTotalSize = MAX_SAMPLES_PER_ONCE * x.ChannelsCount * x.BitsPerSample / 8;
                             int bytesRead=0; //frameBufferTotalSize;
                             byte[] frameBuffer = new byte[frameBufferTotalSize];
-                            bool WExtHeader =  m_ChannelMask >= 0;
+                            bool WExtHeader = m_ChannelMask >= 0;
+                            m_ChannelMask = x.ChannelMask;
                             bool Greater4GB =  m_nSizeInBytes >= (uint.MaxValue - 68);
                             if ((Greater4GB) && (m_HeaderType > 2)) m_HeaderType -= 2;
                             if (m_encoder != null) {
@@ -334,6 +335,7 @@ namespace BeHappy
             const uint FAAD_MAGIC_VALUE = 0xFFFFFF00;
             bool Greater4GB =  m_nSizeInBytes>=(uint.MaxValue-68);
             bool WExtHeader =  m_ChannelMask >= 0;
+            m_ChannelMask = x.ChannelMask;
             uint HeaderSize = (uint)(WExtHeader ? 60 : 36);
             int[] defmask = {0, 4, 3, 11, 263, 1543, 1551, 1807, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 

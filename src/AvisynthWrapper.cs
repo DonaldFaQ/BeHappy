@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Collections;
+using System.Threading;
 
 namespace BeHappy
 {
@@ -18,6 +19,7 @@ namespace BeHappy
 		IYUV    = I420
 	}
 
+    [SerializableAttribute]
 	public class AviSynthException:ApplicationException
 	{
 
@@ -69,29 +71,33 @@ namespace BeHappy
 			}
 		}
 
-		public AviSynthClip OpenScriptFile(string filePath, AviSynthColorspace forceColorspace)
-		{
-			return new AviSynthClip("Import", filePath, forceColorspace, this);
-		}
+        public static AviSynthClip OpenScriptFile(string filePath)
+        {
+            return new AviSynthClip("Import", filePath, false, true);
+        }
 
-		public AviSynthClip ParseScript(string script, AviSynthColorspace forceColorspace)
-		{
-			return new AviSynthClip("Eval", script, forceColorspace, this);
-		}
+        public static AviSynthClip OpenScriptFile(string filePath, bool bRequireRGB24)
+        {
+            return new AviSynthClip("Import", filePath, bRequireRGB24, true);
+        }
+
+        public static AviSynthClip ParseScript(string script)
+        {
+            return new AviSynthClip("Eval", script, false, true);
+        }
+
+        public static AviSynthClip ParseScript(string script, bool bRequireRGB24)
+        {
+            return new AviSynthClip("Eval", script, bRequireRGB24, true);
+        }
+
+        public static AviSynthClip ParseScript(string script, bool bRequireRGB24, bool runInThread)
+        {
+            return new AviSynthClip("Eval", script, bRequireRGB24, runInThread);
+        }
 
 
-		public AviSynthClip OpenScriptFile(string filePath)
-		{
-			return OpenScriptFile(filePath, AviSynthColorspace.RGB24);
-		}
-
-		public AviSynthClip ParseScript(string script)
-		{
-			return ParseScript(script, AviSynthColorspace.RGB24);
-		}
-		
-
-		void IDisposable.Dispose()
+        public void Dispose()
 		{
 			
 		}
@@ -123,38 +129,75 @@ namespace BeHappy
 			public int nchannels;
 			public int num_audio_frames;
 			public long num_audio_samples;
-		}
+            public int channelMask;
+        }
 
 
-		[DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
-		private static extern int dimzon_avs_init_2(ref IntPtr avs, string func, string arg, ref AVSDLLVideoInfo vi, ref AviSynthColorspace originalColorspace, ref AudioSampleType originalSampleType, string cs);
-		[DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
-		private static extern int dimzon_avs_destroy(ref IntPtr avs);
-		[DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
-		private static extern int dimzon_avs_getlasterror(IntPtr avs, [MarshalAs(UnmanagedType.LPStr)] StringBuilder sb, int len);
-		[DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
-		private static extern int dimzon_avs_getaframe(IntPtr avs, IntPtr buf, long sampleNo, long sampleCount);
-		[DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
-                private static extern int dimzon_avs_getvframe(IntPtr avs, IntPtr buf, int stride, int frm);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_init_2(ref IntPtr avs, string func, string arg, ref AVSDLLVideoInfo vi, ref AviSynthColorspace originalColorspace, ref AudioSampleType originalSampleType, string cs);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_init_3(ref IntPtr avs, string func, string arg, ref AVSDLLVideoInfo vi, ref AviSynthColorspace originalColorspace, ref AudioSampleType originalSampleType, string cs);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_destroy(ref IntPtr avs);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getlasterror(IntPtr avs, [MarshalAs(UnmanagedType.LPStr)] StringBuilder sb, int len);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getaframe(IntPtr avs, IntPtr buf, long sampleNo, long sampleCount);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getvframe(IntPtr avs, IntPtr buf, int stride, int frm);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getintvariable(IntPtr avs, string name, ref int val);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getinterfaceversion(ref int val);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_getstrfunction(IntPtr avs, string func, [MarshalAs(UnmanagedType.LPStr)] StringBuilder sb, int len);
+        [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern int dimzon_avs_functionexists(IntPtr avs, string func, ref bool val);
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool FreeLibrary(IntPtr hModule);
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool LoadLibraryA(string hModule);
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool GetModuleHandleExA(int dwFlags, string ModuleName, IntPtr phModule);
+        [DllImport("Kernel32")]
+        private extern static Boolean CloseHandle(IntPtr handle);
 
-		#endregion
+        #endregion
 
-		private IntPtr _avs;
-		private AVSDLLVideoInfo _vi;
-		private AviSynthColorspace _colorSpace;
-		private AudioSampleType _sampleType;
+        private IntPtr _avs;
+        private AVSDLLVideoInfo _vi;
+        private AviSynthColorspace _colorSpace;
+        private AudioSampleType _sampleType;
+        private static object _locker = new object();
+        private static object _lockerAccessCounter = new object();
+        private static object _lockerDLL = new object();
+        private static int _countDLL = 0;
+        private int _countAccess = 0;
+        private int _random;
 
-		private string getLastError()
-		{
-			const int errlen = 1024;
-			StringBuilder sb = new StringBuilder(errlen);
-			sb.Length = dimzon_avs_getlasterror(_avs, sb, errlen);
-			return sb.ToString();
-		}
+        private string GetLastError()
+        {
+            const int errlen = 1024;
+            StringBuilder sb = new StringBuilder(errlen);
+            try
+            {
+                if (_avs != IntPtr.Zero)
+                {
+                    AccessCounter(true);
+                    sb.Length = dimzon_avs_getlasterror(_avs, sb, errlen);
+                    AccessCounter(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                sb.AppendLine(ex.Message);
+            }
+            return sb.ToString();
+        }
 
-		#region Clip Properties
+        #region Clip Properties
 
-		public bool HasVideo
+        public bool HasVideo
 		{
 			get
 			{
@@ -225,8 +268,16 @@ namespace BeHappy
 				return _vi.num_frames;
 			}
 		}
-		// Audio
-		public int AudioSampleRate
+        // Audio
+		public bool HasAudio
+        {
+            get
+            {
+                return _vi.num_audio_samples > 0;
+            }
+        }
+
+        public int AudioSampleRate
 		{
 			get
 			{
@@ -255,8 +306,16 @@ namespace BeHappy
 				return (short)_vi.nchannels;
 			}
 		}
+        public int ChannelMask
+        {
+            get
+            {
+                return _vi.channelMask;
+            }
 
-		public AviSynthColorspace PixelType
+        }
+
+        public AviSynthColorspace PixelType
 		{
 			get
 			{
@@ -278,16 +337,49 @@ namespace BeHappy
 				return _sampleType;
 			}
 		}
+        public string GetStrFunction(string strFunction)
+        {
+            const int errlen = 1024;
+            StringBuilder sb = new StringBuilder(errlen);
+            if (_avs != IntPtr.Zero)
+            {
+                AccessCounter(true);
+                sb.Length = dimzon_avs_getstrfunction(_avs, strFunction, sb, errlen);
+                AccessCounter(false);
+            }
+            return sb.ToString();
+        }
+        public int GetIntVariable(string variableName, int defaultValue)
+        {
+            int v = 0;
+            int res = 0;
+            if (_avs != IntPtr.Zero)
+            {
+                AccessCounter(true);
+                res = dimzon_avs_getintvariable(this._avs, variableName, ref v);
+                AccessCounter(false);
+            }
+            if (res < 0)
+                throw new AviSynthException(GetLastError());
+            return (0 == res) ? v : defaultValue;
+        }
 
 
-		#endregion
+        #endregion
 
-		public void ReadAudio(IntPtr addr, long offset, int count)
+        public void ReadAudio(IntPtr addr, long offset, int count)
 		{
-			if (0 != dimzon_avs_getaframe(_avs, addr, offset, count))
-				throw new AviSynthException(getLastError());
-
-		}
+            if (_avs != IntPtr.Zero)
+            {
+                AccessCounter(true);
+                if (0 != dimzon_avs_getaframe(_avs, addr, offset, count))
+                {
+                    AccessCounter(false);
+                    throw new AviSynthException(GetLastError());
+                }
+                AccessCounter(false);
+            }
+        }
 
 		public void ReadAudio(byte buffer, long offset, int count)
 		{
@@ -304,27 +396,79 @@ namespace BeHappy
 
 		public void ReadFrame(IntPtr addr, int stride, int frame)
 		{
-			if (0 != dimzon_avs_getvframe(_avs, addr, stride, frame))
-				throw new AviSynthException(getLastError());
-		}
+            if (_avs != IntPtr.Zero)
+            {
+                AccessCounter(true);
+                if (0 != dimzon_avs_getvframe(_avs, addr, stride, frame))
+                {
+                    AccessCounter(false);
+                    throw new AviSynthException(GetLastError());
+                }
+                AccessCounter(false);
+            }
+        }
 
-		public AviSynthClip(string func, string arg , AviSynthColorspace forceColorspace, AviSynthScriptEnvironment env)
-		{
+        /// <summary>
+        /// Gets the AviSynth interface version of the AviSynthWrapper.dll
+        /// </summary>
+        /// <returns></returns>
+        public static int GetAvisynthWrapperInterfaceVersion()
+        {
+            int iVersion = 0;
+            try
+            {
+                int iResult = dimzon_avs_getinterfaceversion(ref iVersion);
+            }
+            catch (Exception) { }
+            return iVersion;
+        }
 
-			_vi = new AVSDLLVideoInfo();
-			_avs =  new IntPtr(0);
-			_colorSpace = AviSynthColorspace.Unknown;
-			_sampleType = AudioSampleType.Unknown;
-			if(0!=dimzon_avs_init_2(ref _avs, func, arg, ref _vi, ref _colorSpace, ref _sampleType, forceColorspace.ToString()))
-			{
-				string err = getLastError();
-				cleanup(false);
-				throw new AviSynthException(err);
-			}
-		}
+        public AviSynthClip(string func, string arg, bool bRequireRGB24, bool bRunInThread)
+        {
+            _vi = new AVSDLLVideoInfo();
+            _avs = IntPtr.Zero;
+            _colorSpace = AviSynthColorspace.Unknown;
+            _sampleType = AudioSampleType.Unknown;
+            bool bOpenSuccess = false;
+            string strErrorMessage = string.Empty;
+
+            lock (_locker)
+            {
+                Random rnd = new Random();
+                _random = rnd.Next(1, 1000000);
+
+                System.Windows.Forms.Application.UseWaitCursor = true;
+                if (bRunInThread)
+                {
+                    Thread t = new Thread(new ThreadStart(delegate
+                    {
+                        bOpenSuccess = OpenAVSScript(func, arg, bRequireRGB24, out strErrorMessage);
+                    }));
+                    t.Start();
+                    while (t.ThreadState == ThreadState.Running)
+                        Thread.Sleep(1000);
+                }
+                else
+                {
+                    bOpenSuccess = OpenAVSScript(func, arg, bRequireRGB24, out strErrorMessage);
+                }
+                System.Windows.Forms.Application.UseWaitCursor = false;
+            }
+
+            if (bOpenSuccess == false)
+            {
+                string err = string.Empty;
+                if (_avs != IntPtr.Zero)
+                    err = GetLastError();
+                else
+                    err = strErrorMessage;
+                Dispose(false);
+                throw new AviSynthException(err);
+            }
+        }
 
 
-		private void cleanup(bool disposing)
+        private void cleanup(bool disposing)
 		{
 			dimzon_avs_destroy(ref _avs);
 			_avs = new IntPtr(0);
@@ -334,14 +478,65 @@ namespace BeHappy
 
 		~AviSynthClip()
 		{
-			cleanup(false);
-		}
+            Dispose(false);
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
 
-		void IDisposable.Dispose()
-		{
-			cleanup(true);
-		}
-		public short BitsPerSample
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_avs == IntPtr.Zero)
+                return;
+
+            // wait till the avs object is not used anymore
+            while (_countAccess > 0)
+                Thread.Sleep(100);
+            _ = dimzon_avs_destroy(ref _avs);
+            if (_avs != IntPtr.Zero)
+                CloseHandle(_avs);
+            _avs = IntPtr.Zero;
+            if (disposing)
+                GC.SuppressFinalize(this);
+                //HandleAviSynthWrapperDLL(true, String.Empty);
+        }
+
+        private bool OpenAVSScript(string func, string arg, bool bRequireRGB24, out string strErrorMessage)
+        {
+            bool bOpenSuccess = false;
+            strErrorMessage = string.Empty;
+            try
+            {
+                if (0 == dimzon_avs_init_3(ref _avs, func, arg, ref _vi, ref _colorSpace, ref _sampleType,
+                        bRequireRGB24 ? AviSynthColorspace.RGB24.ToString() : AviSynthColorspace.Unknown.ToString()))
+                        bOpenSuccess = true;
+
+                if (!bOpenSuccess)
+                {
+                    // fallback to the old function
+                    if (0 == dimzon_avs_init_2(ref _avs, func, arg, ref _vi, ref _colorSpace, ref _sampleType, AviSynthColorspace.RGB24.ToString()))
+                        bOpenSuccess = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                strErrorMessage = ex.Message;
+            }
+            return bOpenSuccess;
+        }
+
+        private void AccessCounter(bool bAdd)
+        {
+            lock (_lockerAccessCounter)
+            {
+                if (bAdd)
+                    _countAccess++;
+                else
+                    _countAccess--;
+            }
+        }
+        public short BitsPerSample
 		{
 			get
 			{
