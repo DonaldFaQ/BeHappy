@@ -54,20 +54,23 @@ namespace BeHappy
 		private MessageWindow msgWindow;
 		
 		private const string groupBoxSourceText = "[1] &Source";
-		private int getSourceFilesCount {
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private int getSourceFilesCount {
 			get {return sourceFiles.Length;}
 		}
 		private Action setGroupBoxSource_Header;
-		
-		public MainForm()
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public MainForm()
 		{
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
 
-			// set font to SegoeUI:9 , groupboxes require explicit font setting
-			Utils.ChangeFontRecursive(new Control[] {this, this.groupBoxDestination, this.groupBoxDsp, this.groupBoxOperations,
+            // set font to SegoeUI:9 , groupboxes require explicit font setting
+            Utils.ChangeFontRecursive(new Control[] {this, this.groupBoxDestination, this.groupBoxDsp, this.groupBoxOperations,
 				this.groupBoxSource, this.groupBoxTweak},
 				// wine-mono seems to overscale fonts, so make it 1 pt smaller
 				Utils.HasMono ? new Font(SystemFonts.MessageBoxFont.Name, 8) : SystemFonts.MessageBoxFont);
@@ -148,7 +151,8 @@ namespace BeHappy
 			
 		}
 
-		private void loadExtensionsAndApplyConfiguration()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void loadExtensionsAndApplyConfiguration()
 		{
 			//1) let's load all extensions
 			audioSources = new List<ExtensionItemBase>();
@@ -168,11 +172,11 @@ namespace BeHappy
 					extension = Extension.LoadFromFile(file);
 					fillFromExtension(extension, audioEncoders, dspProcessors, audioSources);
 				}
-				catch (Exception e) {
-					switch(MessageBox.Show("Can't load extensions from file " + file + Environment.NewLine + e.ToString(), "Can't load extension", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error ))
+				catch (ArithmeticException) {
+					switch(MessageBox.Show("Can't load extensions from file " + file + Environment.NewLine, "Can't load extension", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error ))
 					{
 						case DialogResult.Abort:
-							throw e;
+							throw;
 						case DialogResult.Retry:
 							goto __retry;
 						case DialogResult.Ignore:
@@ -244,7 +248,8 @@ namespace BeHappy
 			
 		}
 
-		private void AddContextMenuFilters(List<ExtensionItemBase> source, out List<ToolStripItem> target1, out List<ToolStripItem> target2)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void AddContextMenuFilters(List<ExtensionItemBase> source, out List<ToolStripItem> target1, out List<ToolStripItem> target2)
 		{
 			List<string> filters = new List<string>();
 			
@@ -277,8 +282,9 @@ namespace BeHappy
 			
 			((ToolStripMenuItem)target1.Find(t => t.Text == "*")).Checked = true;
 		}
-		
-		private void FilterItemsClick(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void FilterItemsClick(object sender, EventArgs e)
 		{
 			var tsi = (ToolStripMenuItem)sender;
 			List<ToolStripItem> allItems = new List<ToolStripItem>();
@@ -360,11 +366,12 @@ namespace BeHappy
 			if (combo.Items.Count > 0)
 				combo.SelectedItem = combo.Items[0];
 		}
-		
-		/// <summary>
-		/// Call this before 'loadExtensionsAndApplyConfiguration()'
-		/// </summary>
-		private void BuildContextMenus()
+
+        /// <summary>
+        /// Call this before 'loadExtensionsAndApplyConfiguration()'
+        /// </summary>
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void BuildContextMenus()
 		{
 			itemFilterText = new ToolStripMenuItem("--- Plugin Filter ---"){TextAlign = ContentAlignment.MiddleCenter};
 			itemFilterText.Enabled = false;
@@ -409,8 +416,9 @@ namespace BeHappy
 				itemConfigureEncoder,
                 itemResetEncoder};
 		}
-				
-		private void ContextMenuGroupBoxOpening(object sender, CancelEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void ContextMenuGroupBoxOpening(object sender, CancelEventArgs e)
 		{
 			ContextMenuStrip cm = (ContextMenuStrip)sender;
 			Control cl = (cm.SourceControl as LinkLabel).Parent as GroupBoxLinkLabel;
@@ -474,22 +482,21 @@ namespace BeHappy
 			}
 			
 		}
-		
-		private void loadMiscConfiguration(Configuration c)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void loadMiscConfiguration(Configuration c)
 		{
 			if (c.MiscSettings != null)
 			{
-				this.ds_player = c.MiscSettings.directShowPlayer;
-//			else
-//				this.ds_player = "mplayer";
-		
+				this.ds_player = c.MiscSettings.directShowPlayer;		
 				this.btnPreview.Checked = c.MiscSettings.omitEncoderScriptChecked;
 				this.btnEnqueue.Checked = c.MiscSettings.startJobsInstantlyChecked;
 				this.cbxVisualStyle.Checked = c.MiscSettings.visualStyleChecked;
 			}
 		}
 
-		private void loadGuiPositionConfiguration(Configuration c)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void loadGuiPositionConfiguration(Configuration c)
 		{
 			if (c.GuiPosition == null)
 				return;
@@ -498,7 +505,6 @@ namespace BeHappy
 			this.Left = c.GuiPosition.iLeft;
 			this.Width = c.GuiPosition.iWidth;
 			this.Height = c.GuiPosition.iHeight;
-			//this.splitContainer1.SplitterDistance = c.GuiPosition.iSplitterDistance;     //broken on hi-dpi
 		}
 
 		private static void loadPluginsConfiguration(List<ExtensionItemBase> plugins, IDictionary c)
@@ -525,8 +531,9 @@ namespace BeHappy
 				audioSources.AddRange(extension.AudioSources);
 		}
 
-		// added exception handling to make sure items already added to collections do not crash the application
-		private void saveConfiguration()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        // added exception handling to make sure items already added to collections do not crash the application
+        private void saveConfiguration()
 		{
 			try {
 				Configuration c = new Configuration();
@@ -609,20 +616,22 @@ namespace BeHappy
 			}
 		}
 
-		private string getConfigFileName()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string getConfigFileName()
 		{
 			return Path.Combine(getExeDirectory(), "BeHappy.State");
 		}
 
 
-		#region AviSynth script generation
-
-		private string createAvsScript(string sourceFileName, string targetFileName, AudioEncoder enc)
+        #region AviSynth script generation
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string createAvsScript(string sourceFileName, string targetFileName, AudioEncoder enc)
 		{
 			return createAvsScript(sourceFileName, targetFileName, enc, false);
 		}
 
-		private string createAvsScript(string sourceFileName, string targetFileName, AudioEncoder enc, bool omitEncoderScript)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string createAvsScript(string sourceFileName, string targetFileName, AudioEncoder enc, bool omitEncoderScript)
 		{
 			string SEPARATOP = new string('#',40);
 			StringBuilder sb2 = new StringBuilder();
@@ -726,19 +735,21 @@ namespace BeHappy
 			return sb1.ToString();
 		}
 
-		private string createAvsScript(bool omitEncoderScript)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string createAvsScript(bool omitEncoderScript)
 		{
 			return createAvsScript(sourceFileName, targetFileName, currentEncoder, omitEncoderScript);
 		}
 
-		private string createAvsScript()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string createAvsScript()
 		{
 			return createAvsScript(false);
 		}
 
-		#endregion
-
-		private string[] sourceFiles
+        #endregion
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string[] sourceFiles
 		{
 			get {string[] items = new string[lstSourceFiles.Items.Count];
 				for(int i = 0; i < items.Length; i++)
@@ -748,13 +759,15 @@ namespace BeHappy
 				return items;
 			}
 		}
-		
-		private string sourceFileName
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string sourceFileName
 		{
 			get {return lstSourceFiles.Items.Count > 0 ? lstSourceFiles.SelectedItem.ToString() : string.Empty;}
 		}
 
-		private string targetFileName
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string targetFileName
 		{
 			get {return txtOutputFileName.Text.Trim();}
 			set {txtOutputFileName.Text = value.Trim();
@@ -762,7 +775,8 @@ namespace BeHappy
 			}
 		}
 
-		private void OpenFiles(bool openFolder)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void OpenFiles(bool openFolder)
 		{
 			string[] files;
 			
@@ -802,8 +816,9 @@ namespace BeHappy
 			toolStripStatusLabel1.Text = string.Format("{0} source files added.", files.Length);
 			setGroupBoxSource_Header();
 		}
-		
-		private void LinkLabelOpenLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void LinkLabelOpenLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
@@ -819,8 +834,9 @@ namespace BeHappy
 				return;
 			}
 		}
-		
-		void LstSourceFilesDragDrop(object sender, DragEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstSourceFilesDragDrop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
@@ -857,15 +873,17 @@ namespace BeHappy
 			}
 		}
 
-		void LstSourceFilesDragEnter(object sender, DragEventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstSourceFilesDragEnter(object sender, DragEventArgs e)
 		{
 			labelDragDrop.Visible = false;
 			
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 				e.Effect = DragDropEffects.Copy;
 		}
-		
-		void AddFiles(string[] files)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void AddFiles(string[] files)
 		{
 			labelDragDrop.Visible = false;
 			lstSourceFiles.Items.AddRange(files);
@@ -906,8 +924,9 @@ namespace BeHappy
 				}
 			}
 		}
-		
-		private void selectTargetFile(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void selectTargetFile(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			if (sourceFiles.Length < 1)
 			{
@@ -945,13 +964,15 @@ namespace BeHappy
 				}
 			}
 		}
-		
-		void LinkLabelClearLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LinkLabelClearLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			LstSourceFilesClear();
 		}
 
-		void LstSourceFilesClear()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstSourceFilesClear()
 		{
             toolTip1.SetToolTip(lstSourceFiles, String.Empty);
             lstSourceFiles.Items.Clear();
@@ -964,12 +985,14 @@ namespace BeHappy
             lstAudioSource.Refresh();
         }
 
-		void LstSourceFilesSelectedIndexChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstSourceFilesSelectedIndexChanged(object sender, EventArgs e)
 		{
 			toolTip1.SetToolTip(lstSourceFiles, sourceFileName);
 		}
-		
-		void LstSourceFilesDropDown(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstSourceFilesDropDown(object sender, EventArgs e)
 		{
 			ComboBox scb = (ComboBox)sender;
 			int width = scb.DropDownWidth;
@@ -989,10 +1012,10 @@ namespace BeHappy
 		}
 
 
-		
-		#region JobList management
 
-		private Job[] createJobs()
+        #region JobList management
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private Job[] createJobs()
 		{
 			Job[] jbs = new Job[sourceFiles.Length];
 			AudioEncoder enc = currentEncoder;
@@ -1031,7 +1054,8 @@ namespace BeHappy
 			return jbs;
 		}
 
-		private void submitJobToJobControl(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void submitJobToJobControl(object sender, System.EventArgs e)
 		{
 			// make sure we have a source and a target
 			if ((sourceFiles.Length < 1) || String.IsNullOrWhiteSpace(targetFileName))
@@ -1064,7 +1088,8 @@ namespace BeHappy
 			}
 		}
 
-		private static void updateListViewItem(ListViewItem item)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private static void updateListViewItem(ListViewItem item)
 		{
 			Job job = item.Tag as Job;
 			item.SubItems[1].Text = job.State.ToString();
@@ -1075,7 +1100,8 @@ namespace BeHappy
 			item.SubItems[6].Text = job.TargetFile;
 		}
 
-		private static ListViewItem[] createJobItems(Job[] jbs)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private static ListViewItem[] createJobItems(Job[] jbs)
 		{
 			var items = new ListViewItem[jbs.Length];
 			
@@ -1091,7 +1117,8 @@ namespace BeHappy
 			return items;
 		}
 
-		private void toggleJobStatus(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void toggleJobStatus(object sender, System.EventArgs e)
 		{
 			if(jobListView.SelectedItems.Count == 0)
 				return;
@@ -1110,7 +1137,8 @@ namespace BeHappy
 			}
 		}
 
-		private void moveUpJob(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void moveUpJob(object sender, System.EventArgs e)
 		{
 			if(jobListView.SelectedItems.Count==0)
 				return;
@@ -1130,7 +1158,8 @@ namespace BeHappy
 
 		}
 
-		private void moveDownJob(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void moveDownJob(object sender, System.EventArgs e)
 		{
 			if(jobListView.SelectedItems.Count==0)
 				return;
@@ -1149,7 +1178,8 @@ namespace BeHappy
 			item.Selected = true;
 		}
 
-		private void deleteJob(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void deleteJob(object sender, System.EventArgs e)
 		{
 			int iIdxOfSelectedItem = 0;
 			while (jobListView.SelectedItems.Count > 0)
@@ -1173,7 +1203,8 @@ namespace BeHappy
 			}
 		}
 
-		private void btnDeleteAll_Click(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void btnDeleteAll_Click(object sender, EventArgs e)
 		{
 			if (jobListView.Items.Count == 0)
 				return;
@@ -1201,9 +1232,9 @@ namespace BeHappy
 			}
 		}
 
-		#endregion
-
-		private void moveUpDSP(object sender, EventArgs e)
+        #endregion
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void moveUpDSP(object sender, EventArgs e)
 		{
 			int nIndex = lstDSP.SelectedIndex;
 			if(nIndex>=0)
@@ -1224,7 +1255,8 @@ namespace BeHappy
 			SetDSPMoveButtonState();
 		}
 
-		private void moveDownDSP(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void moveDownDSP(object sender, EventArgs e)
 		{
 			int nIndex = lstDSP.SelectedIndex;
 			if(nIndex>=0)
@@ -1249,12 +1281,14 @@ namespace BeHappy
 			SetDSPMoveButtonState();
 		}
 
-		private string getExeDirectory()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private string getExeDirectory()
 		{
 			return Application.StartupPath;
 		}
 
-		private void disableDSP(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void disableDSP(object sender, EventArgs e)
 		{
 			bool a,b;
 			ExtensionItemBase item = lstDSP.SelectedItem as ExtensionItemBase;
@@ -1266,12 +1300,14 @@ namespace BeHappy
 			btnConfigureDSP.Enabled = b && a;
 		}
 
-		private void enableDelay(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void enableDelay(object sender, EventArgs e)
 		{
 			numericUpDownDelay.Enabled=(sender as CheckBox).Checked;
 		}
 
-		private void enableSplit(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void enableSplit(object sender, EventArgs e)
 		{
 			numericUpDownSplitA.Enabled=numericUpDownSplitB.Enabled=(sender as CheckBox).Checked;
 		}
@@ -1281,7 +1317,8 @@ namespace BeHappy
 			get {return this.GetType();}
 		}
 
-		private void exportAviSynthScriptToFile(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void exportAviSynthScriptToFile(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(sourceFileName))
 			{
@@ -1302,7 +1339,8 @@ namespace BeHappy
 			}
 		}
 
-		private void lstEncoder_SelectedIndexChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void lstEncoder_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			itemResetEncoder.Enabled = linkLabelEncoderConfig.Enabled = itemConfigureEncoder.Enabled = currentEncoder.IsSupportConfiguration;
 			
@@ -1320,9 +1358,9 @@ namespace BeHappy
 				}
 			}
 		}
-		
-				
-		void LstAudioSourceDrawItem(object sender, DrawItemEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstAudioSourceDrawItem(object sender, DrawItemEventArgs e)
 		{
 			if (e.Index == -1) return;
 			
@@ -1346,7 +1384,8 @@ namespace BeHappy
 			e.DrawFocusRectangle();
 		}
 
-		void LstEncoderDrawItem(object sender, DrawItemEventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LstEncoderDrawItem(object sender, DrawItemEventArgs e)
 		{
 			if (e.Index == -1) return;
 			
@@ -1364,18 +1403,21 @@ namespace BeHappy
 			e.Graphics.DrawString(cb.Items[e.Index].ToString(), e.Font, brsh, e.Bounds);
 			e.DrawFocusRectangle();
 		}
-		
-		private void configureEncoder(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void configureEncoder(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			configureItemInCombo(currentEncoder, lstEncoder);
 		}
 
-		private void configureItemInCombo(ExtensionItemBase item, ComboBox combo)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void configureItemInCombo(ExtensionItemBase item, ComboBox combo)
 		{
 			configureItemInCombo(item, combo, false);
 		}
 
-		private void configureItemInCombo(ExtensionItemBase item, ComboBox combo, bool reset)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void configureItemInCombo(ExtensionItemBase item, ComboBox combo, bool reset)
 		{
 			if (reset)
 				item.ResetConfiguration();
@@ -1387,27 +1429,33 @@ namespace BeHappy
 			combo.SelectedIndex = n;
 
 		}
-		private void LinkLabelConfigureAudioSourceLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void LinkLabelConfigureAudioSourceLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			configureItemInCombo(currentSource, lstAudioSource);
 		}
 
-		private AudioSource currentSource
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private AudioSource currentSource
 		{
 			get	{return (lstAudioSource.SelectedItem as AudioSource);}
 		}
 
-		private AudioEncoder currentEncoder
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private AudioEncoder currentEncoder
 		{
 			get	{return (lstEncoder.SelectedItem as AudioEncoder);}
 		}
 
-		private void lstAudioSource_SelectedIndexChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void lstAudioSource_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			itemResetAudioSource.Enabled = linkLabelSourceConfig.Enabled = itemConfigureAudioSource.Enabled = currentSource.IsSupportConfiguration;
 		}
 
-		private void lstDSP_SelectedIndexChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void lstDSP_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ExtensionItemBase item = lstDSP.SelectedItem as ExtensionItemBase;
 			if (item != null)
@@ -1418,7 +1466,8 @@ namespace BeHappy
 			SetDSPMoveButtonState();
 		}
 
-		private void configureDSP(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void configureDSP(object sender, EventArgs e)
 		{
 			DigitalSignalProcessor item = lstDSP.SelectedItem as DigitalSignalProcessor;
 			if (item==null)
@@ -1439,7 +1488,8 @@ namespace BeHappy
 
 		private string m_tempFileName = Path.GetTempPath() + "preview-" + Guid.NewGuid().ToString("n")+".avs";
 
-		private void startPreview(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void startPreview(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(sourceFileName))
 			{
@@ -1476,8 +1526,9 @@ namespace BeHappy
 		private List<Jobs> jobs;
 		private int wjcount;
 		private System.Windows.Forms.Timer timer;
-		
-		private void startJobs(object sender, System.EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void startJobs(object sender, System.EventArgs e)
 		{
 			wjcount = 0;
 			jobs = new List<Jobs>();
@@ -1514,10 +1565,11 @@ namespace BeHappy
 			executeNextJob();
 			timer.Start();
 		}
-		
-		// timer is used to a) start jobs sequential (prevent avisynth crashes)
-		//					b) update jobListView progress (reduce gui overhead)
-		private void tickEventHandler(object sender, EventArgs e)
+
+        // timer is used to a) start jobs sequential (prevent avisynth crashes)
+        //					b) update jobListView progress (reduce gui overhead)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void tickEventHandler(object sender, EventArgs e)
 		{
 			foreach (ListViewItem item in jobListView.Items)
 			{
@@ -1536,7 +1588,8 @@ namespace BeHappy
 				executeNextJob();
 		}
 
-		private void executeNextJob()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void executeNextJob()
 		{
 			// if number of running jobs is less than number of max allowed jobs
 			if (jobs.FindAll(j => j.Job.State == JobState.Processing).Count < (int)numericUpDownJobs.Value)
@@ -1573,8 +1626,9 @@ namespace BeHappy
 				}
 			}
 		}
-		
-		private void jobsFinished()
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void jobsFinished()
 		{
 			timer.Stop();
 			timer = null;
@@ -1586,14 +1640,16 @@ namespace BeHappy
 			if (breakAfterCurrentJob) toolStripStatusLabel1.Text = "Stopped by user request. Check job states/logs for errors.";
 			else toolStripStatusLabel1.Text = "Finished jobqueue processing. Check job states/logs for errors.";
 		}
-		
-		private void deselectAllJobs()
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void deselectAllJobs()
 		{
 			foreach (ListViewItem li in jobListView.Items)
 				li.Selected = false;
 		}
 
-		private void encoderCallback(Job sender, EncoderCallbackEventArgs s)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void encoderCallback(Job sender, EncoderCallbackEventArgs s)
 		{
 			if (!this.InvokeRequired)
 			{
@@ -1602,7 +1658,6 @@ namespace BeHappy
 				switch(s.Type)
 				{
 					case EncoderCallbackEventArgs.EventType.Progress:
-//						this.toolStripProgressBar1.Value = (int)s.Progress;		//too much gui overhead when running multiple jobs parallel
 						break;
 					case EncoderCallbackEventArgs.EventType.Done:
 						jobs[ji].Job.State = JobState.Done;
@@ -1642,22 +1697,25 @@ namespace BeHappy
 				this.Invoke(new EncoderStatusCallbackDelegate(encoderCallback), new object[]{sender, s});
 			}
 		}
-		
-		private void abortEncoding(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void abortEncoding(object sender, EventArgs e)
 		{
 			breakAfterCurrentJob = true;
 			timer.Stop();
 			jobs.ForEach(j => {if (j.Job.State == JobState.Processing) j.Encoder.Abort();});
 		}
 
-		private void stopEncoding(object sender, System.EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void stopEncoding(object sender, System.EventArgs e)
 		{
 			toolStripStatusLabel1.Text = "Break after running job.";
 			breakAfterCurrentJob = true;
 			btnStop.Enabled = false;
 		}
-		
-		private void MainFormLoad(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void MainFormLoad(object sender, EventArgs e)
 		{
 			string[] args = Environment.GetCommandLineArgs();
 			
@@ -1673,7 +1731,8 @@ namespace BeHappy
 			}
 		}
 
-		private void MainForm_Closing(object sender, CancelEventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void MainForm_Closing(object sender, CancelEventArgs e)
 		{
 			if (jobs == null) return;
 			
@@ -1685,8 +1744,9 @@ namespace BeHappy
 			}
 			else e.Cancel = true;
 		}
-		
-		private void MainForm_Closed(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void MainForm_Closed(object sender, EventArgs e)
 		{
 			try
 			{
@@ -1697,7 +1757,8 @@ namespace BeHappy
 			saveConfiguration();
 		}
 
-		private void jobListView_SelectedIndexChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void jobListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			string log = string.Empty;
 			if (jobListView.SelectedItems.Count == 1)
@@ -1713,16 +1774,17 @@ namespace BeHappy
 			SetJobMoveButtonState();
 		}
 
-		void LinkLabelAutoJobsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LinkLabelAutoJobsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			if (Environment.ProcessorCount == 2)
 				numericUpDownJobs.Value = 2;
 			else numericUpDownJobs.Value = Math.Round((Environment.ProcessorCount * 70) / 100m);
 		}
 
-		#endregion
-
-		private void SetDSPMoveButtonState()
+        #endregion
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void SetDSPMoveButtonState()
 		{
 			// set move button states
 			if (lstDSP.SelectedItems.Count == 0 ||
@@ -1748,7 +1810,8 @@ namespace BeHappy
 			}
 		}
 
-		private void SetJobMoveButtonState()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void SetJobMoveButtonState()
 		{
 			// set move button and toolStripItemsJoblist.Items states
 			if (jobListView.SelectedItems.Count == 0 ||
@@ -1774,37 +1837,44 @@ namespace BeHappy
 			}
 		}
 
-		private void LinkLabelUrlLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void LinkLabelUrlLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Process.Start((sender as Control).Tag.ToString());
 			(sender as LinkLabel).LinkVisited = true;
 		}
 
-		private void resetEncoder(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void resetEncoder(object sender, EventArgs e)
 		{
 			configureItemInCombo(currentEncoder, lstEncoder, true);
 		}
 
-		private void resetAudioSource(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void resetAudioSource(object sender, EventArgs e)
 		{
 			configureItemInCombo(currentSource, lstAudioSource, true);
 		}
 
-		private void cbxHeader_CheckedChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void cbxHeader_CheckedChanged(object sender, EventArgs e)
 		{
 			numericUpDownHeader.Enabled = cbxHeader.Checked;
 		}
 
-		private void cbxChMask_CheckedChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void cbxChMask_CheckedChanged(object sender, EventArgs e)
 		{
 			numericUpDownChMask.Enabled = cbxChMask.Checked;
 		}
 
-		private void cbxBuffer_CheckedChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void cbxBuffer_CheckedChanged(object sender, EventArgs e)
 		{
 			numericUpDownBuffer.Enabled = cbxBuffer.Checked;
 		}
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         private void cbxVisualStyle_CheckedChanged(object sender, EventArgs e)
         {
 			tabPageNewJob.UseVisualStyleBackColor = cbxVisualStyle.Checked;
@@ -1812,6 +1882,7 @@ namespace BeHappy
             tabPageInfo.UseVisualStyleBackColor = cbxVisualStyle.Checked;
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         private void chkKeepOutput_CheckedChanged(object sender, EventArgs e)
 		{
 			bKeepOutput = chkKeepOutput.Checked;
@@ -1822,7 +1893,8 @@ namespace BeHappy
 			}
 		}
 
-		private void InitPriorityControls()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void InitPriorityControls()
 		{
 			cboPriority.DataSource = CreatePriorityDataSource();
 			cboPriority.DisplayMember = "DisplayItem";
@@ -1865,12 +1937,13 @@ namespace BeHappy
 			return dr;
 		}
 
-		/// <summary>
-		/// Priority change list event handler
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void cboPriority_SelectedIndexChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Priority change list event handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        private void cboPriority_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (jobs != null)
 			{
@@ -1903,7 +1976,8 @@ namespace BeHappy
 			}
 		}
 
-		protected ProcessPriorityClass GetSelectedPriority()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        protected ProcessPriorityClass GetSelectedPriority()
 		{
 			// do this safely and return Idle by default if a crash occurs
 			try
@@ -1917,14 +1991,16 @@ namespace BeHappy
 
 			return ProcessPriorityClass.Idle;
 		}
-		
-		void MainFormSizeChanged(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void MainFormSizeChanged(object sender, EventArgs e)
 		{
 			//adjust jobListView columns on resizing mainForm
 			columnHeader1.Width = columnHeader5.Width = columnHeader6.Width = (int)((this.Width - (columnHeader2.Width + columnHeader3.Width + columnHeader4.Width + columnHeader7.Width)) * 33) /100 - 16;
 		}
-		
-		void ContextMenuStrip1Opening(object sender, CancelEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void ContextMenuStrip1Opening(object sender, CancelEventArgs e)
 		{
 			ContextMenuStrip cm = (ContextMenuStrip)sender;
 			Control cl = cm.SourceControl;
@@ -1973,36 +2049,39 @@ namespace BeHappy
 				e.Cancel = true;
 			}
 		}
-				
-		void ContextMenuStrip1Opened(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void ContextMenuStrip1Opened(object sender, EventArgs e)
 		{
 			if (filterItemsPageTwo != null)
 				filterItemsPageTwo.ShowDropDown();
 		}
-		
-		void LinkLabelReloadPluginsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LinkLabelReloadPluginsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			lstEncoder.Items.Clear();
 			lstDSP.Items.Clear();
 			lstAudioSource.Items.Clear();
 			loadExtensionsAndApplyConfiguration();
 		}
-		
-		
-		void LinkLabelMouseEnter(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LinkLabelMouseEnter(object sender, EventArgs e)
 		{
 			LinkLabel lb = (LinkLabel)sender;
 			lb.LinkColor = lb.ActiveLinkColor;
 		}
-		
-		void LinkLabelMouseLeave(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void LinkLabelMouseLeave(object sender, EventArgs e)
 		{
 			LinkLabel lb = (LinkLabel)sender;
 			lb.LinkColor = Color.Blue;
 		}
-		
-		
-		void BtnShowScriptClick(object sender, EventArgs e)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void BtnShowScriptClick(object sender, EventArgs e)
 		{			
 			if (msgWindow == null || msgWindow.IsDisposed)
 				msgWindow = new MessageWindow();
@@ -2014,7 +2093,8 @@ namespace BeHappy
 			msgWindow.BringToFront();
 		}
 
-		// workaround for listview hi-dpi bugs
+        // workaround for listview hi-dpi bugs
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         private void ScaleListViewColumns(ListView listview, SizeF factor)
         {
             foreach (ColumnHeader column in listview.Columns)
@@ -2023,6 +2103,7 @@ namespace BeHappy
             }
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
         {
             base.ScaleControl(factor, specified);
@@ -2041,7 +2122,8 @@ namespace BeHappy
 		public string Log {get {return Job.Log;}}
 		public Job Job {get; set;}
 		private ListViewItem item;
-		public ListViewItem Item {get {return item;} set {item = value; Job = (Job)value.Tag;}}
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public ListViewItem Item {get {return item;} set {item = value; Job = (Job)value.Tag;}}
 		private Regex cleanUpStdOutRegex = new Regex(@"\n[^\n]+\r", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 		
 		public Jobs()
@@ -2050,8 +2132,9 @@ namespace BeHappy
 			Stderr = new StringBuilder();
 			Stdout = new StringBuilder();
 		}
-		
-		public Jobs(ListViewItem item) :this()
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public Jobs(ListViewItem item) :this()
 		{
 			Item = item;
 		}

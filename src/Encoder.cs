@@ -143,11 +143,12 @@ namespace BeHappy
             }
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         private void encode() {
             try {
                 string sTempFileName = saveScriptToTempFile();
                 try {
-                    using(AviSynthScriptEnvironment env = new AviSynthScriptEnvironment()) {
+                    using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment()) {
                         using(AviSynthClip x = AviSynthScriptEnvironment.ParseScript(m_script)) { //.OpenScriptFile(sTempFileName))
                             if(0 == x.SamplesCount)
                                 throw new ApplicationException("Can't find audio stream!");
@@ -414,6 +415,7 @@ namespace BeHappy
             }
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         internal void Start() {
             m_encoderThread = new Thread(new ThreadStart(this.encode));
             m_encoderThread.Priority = ThreadPriority.Lowest;
@@ -421,7 +423,8 @@ namespace BeHappy
         }
 
         internal void Abort() {
-            m_encoderThread.Abort();
+            CancellationToken cancellationToken = new CancellationToken();
+            cancellationToken.ThrowIfCancellationRequested();
             m_encoderThread = null;
         }
 

@@ -1,37 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-[assembly: AssemblyTitle("BeHappy")]
-[assembly: AssemblyDescription("BeHappy - AviSynth based audio transcoding tool")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Free Sofware Foundation")]
-[assembly: AssemblyProduct("BeHappy")]
-[assembly: AssemblyCopyright("Free Sofware Foundation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
-
-//
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
-
-// ********************************************************************************
-// Please, keep last value by * to distingwish between different compiles ;)
-// Please, don't forget to update version before every release
-// ********************************************************************************
-[assembly: AssemblyVersion("0.3.1.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

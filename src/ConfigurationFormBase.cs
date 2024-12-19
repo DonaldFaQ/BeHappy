@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace BeHappy
 {
@@ -11,7 +12,8 @@ namespace BeHappy
 	/// </summary>
 	public partial class ConfigurationFormBase : System.Windows.Forms.Form
 	{
-		public ConfigurationFormBase()
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public ConfigurationFormBase()
 		{
 			//
 			// Required for Windows Form Designer support

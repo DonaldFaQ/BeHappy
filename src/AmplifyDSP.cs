@@ -2,9 +2,12 @@ using System.Drawing;
 using System.Windows.Forms;
 using BeHappy.Extensibility;
 using System.Xml.Serialization;
+using System.Diagnostics;
+using System;
 
 namespace BeHappy.Amplify
 {
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     internal partial class ConfigurationDialog : BeHappy.ConfigurationFormBase
     {
         public ConfigurationDialog()
@@ -54,6 +57,7 @@ namespace BeHappy.Amplify
 
         #region ISupportConfiguration Members
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         ConfigurationResult ISupportConfiguration.Configure(IWin32Window owner)
         {
             using (ConfigurationDialog f = new ConfigurationDialog())

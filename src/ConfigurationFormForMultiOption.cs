@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace BeHappy.DSP.ConfigurationForms
@@ -29,8 +30,9 @@ namespace BeHappy.DSP.ConfigurationForms
 		private TextBox cmdArgsTextbox;
 		private const string cmdArgsTextboxCaption = "custom arguments";
 		private int[] trackBarValues;
-		
-		internal void Init(BeHappy.Extensions.MultiOptionBase pOptions, BeHappy.Extensions.MultiOptionBase.MultiOptionConfig pConfig)
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        internal void Init(BeHappy.Extensions.MultiOptionBase pOptions, BeHappy.Extensions.MultiOptionBase.MultiOptionConfig pConfig)
 		{
 			int minH = 16;
 			this.Text = pOptions.ToString();
@@ -251,8 +253,7 @@ namespace BeHappy.DSP.ConfigurationForms
 				}
 				else cmdArgsTextbox.Text = pConfig.CustomArgs;
 			}
-			
-			if (!String.IsNullOrEmpty(pOptions.Url))
+            if (!String.IsNullOrEmpty(pOptions.Url))
 			{
 				linkLabelUrl = new LinkLabel();
 				Uri url = new Uri(pOptions.Url);
@@ -311,7 +312,8 @@ namespace BeHappy.DSP.ConfigurationForms
 				Utils.HasMono ? new Font(SystemFonts.MessageBoxFont.Name, 8) : SystemFonts.MessageBoxFont);
 		}
 
-		void trackBar_ValueChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void trackBar_ValueChanged(object sender, EventArgs e)
 		{
 			trackBarValues[rbIndex] = trackBar.Value;
 			
@@ -325,7 +327,8 @@ namespace BeHappy.DSP.ConfigurationForms
 			tableLayoutPanel1.ResumeLayout();
 		}
 
-		void rb_CheckedChanged(object sender, EventArgs e)
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        void rb_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton rb = (RadioButton)sender;
 			rbIndex = radioButtons.ToList().IndexOf(rb);
@@ -366,8 +369,9 @@ namespace BeHappy.DSP.ConfigurationForms
 			}
 			flowLayoutPanel1.ResumeLayout(true);
 		}
-		
-		public BeHappy.Extensions.MultiOptionBase.MultiOptionConfig GetConfig()
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public BeHappy.Extensions.MultiOptionBase.MultiOptionConfig GetConfig()
 		{
 			var cfg = new BeHappy.Extensions.MultiOptionBase.MultiOptionConfig();
 			
