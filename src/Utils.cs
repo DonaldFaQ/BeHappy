@@ -22,9 +22,8 @@ namespace BeHappy
         }
 
         /// <summary>
-        /// Change Font in all given controls and its child controls recursively
-        /// </summary>
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+		/// Change Font in all given controls and its child controls recursively
+		/// </summary>
         public static void ChangeFontRecursive(Control[] controls, System.Drawing.Font font)
         {
             foreach (Control ct in controls)

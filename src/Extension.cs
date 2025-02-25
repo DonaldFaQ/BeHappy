@@ -204,12 +204,11 @@ namespace BeHappy.Extensions
 				ResetConfiguration();
 			}
 
-            /// <summary>
-            /// Show configuration GUI
-            /// </summary>
-            /// <returns>Configuration Result</returns>
-            [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-            public ConfigurationResult Configure(IWin32Window owner)
+			/// <summary>
+			/// Show configuration GUI
+			/// </summary>
+			/// <returns>Configuration Result</returns>
+			public ConfigurationResult Configure(IWin32Window owner)
 			{
 				using(ConfigureFormForNormalizeDSP f = new ConfigureFormForNormalizeDSP())
 				{
@@ -1030,12 +1029,11 @@ namespace BeHappy.Extensions
 			else return String.Empty;
 		}
 
-        /// <summary>
-        /// Show configuration GUI
-        /// </summary>
-        /// <returns>Configuration Result</returns>
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        public ConfigurationResult Configure(IWin32Window owner)
+		/// <summary>
+		/// Show configuration GUI
+		/// </summary>
+		/// <returns>Configuration Result</returns>
+		public ConfigurationResult Configure(IWin32Window owner)
 		{
 			using(ConfigurationFormForMultiOption f = new ConfigurationFormForMultiOption())
 			{

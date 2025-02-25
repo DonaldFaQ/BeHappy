@@ -72,31 +72,26 @@ namespace BeHappy
 			}
 		}
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public static AviSynthClip OpenScriptFile(string filePath)
         {
             return new AviSynthClip("Import", filePath, false, true);
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public static AviSynthClip OpenScriptFile(string filePath, bool bRequireRGB24)
         {
             return new AviSynthClip("Import", filePath, bRequireRGB24, true);
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public static AviSynthClip ParseScript(string script)
         {
             return new AviSynthClip("Eval", script, false, true);
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public static AviSynthClip ParseScript(string script, bool bRequireRGB24)
         {
             return new AviSynthClip("Eval", script, bRequireRGB24, true);
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public static AviSynthClip ParseScript(string script, bool bRequireRGB24, bool runInThread)
         {
             return new AviSynthClip("Eval", script, bRequireRGB24, runInThread);
@@ -428,7 +423,6 @@ namespace BeHappy
             return iVersion;
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public AviSynthClip(string func, string arg, bool bRequireRGB24, bool bRunInThread)
         {
             _vi = new AVSDLLVideoInfo();

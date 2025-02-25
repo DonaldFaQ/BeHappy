@@ -143,7 +143,6 @@ namespace BeHappy
             }
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         private void encode() {
             try {
                 string sTempFileName = saveScriptToTempFile();
@@ -415,7 +414,6 @@ namespace BeHappy
             }
         }
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         internal void Start() {
             m_encoderThread = new Thread(new ThreadStart(this.encode));
             m_encoderThread.Priority = ThreadPriority.Lowest;

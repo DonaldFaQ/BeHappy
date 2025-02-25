@@ -12,12 +12,10 @@ namespace BeHappy
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        public static void Main()
+		public static void Main()
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 			Application.Run(new MainForm());
 		}
 	}

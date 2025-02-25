@@ -80,8 +80,7 @@ namespace BeHappy
 			}
 		}
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        public void SaveToFile(string fileName)
+		public void SaveToFile(string fileName)
 		{
             try
             {

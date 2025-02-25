@@ -5,14 +5,12 @@ using System.Drawing;
 using System.Windows.Forms;
 using BeHappy.Extensibility;
 using System.Xml.Serialization;
-using System.Diagnostics;
 
 namespace BeHappy.TimeStretch
 {
 	internal partial class ConfigurationDialog : BeHappy.ConfigurationFormBase
 	{
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        public ConfigurationDialog()
+		public ConfigurationDialog()
 		{
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
@@ -26,14 +24,13 @@ namespace BeHappy.TimeStretch
 		}
 
 		public string m_strTimeStretchMethod;
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        private void rbtnFrameRate_CheckedChanged(object sender, EventArgs e)
+		
+		private void rbtnFrameRate_CheckedChanged(object sender, EventArgs e)
 		{
 			numCustom.Enabled = numCustomFrom.Enabled = numCustomTo.Enabled = linkLblCalc.Enabled = !(numRateFrom.Enabled = (numRateTo.Enabled = rbtnFrameRate.Checked));
 		}
 
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        private void rdoCtlRate_CheckedChanged(object sender, EventArgs e)
+		private void rdoCtlRate_CheckedChanged(object sender, EventArgs e)
 		{
 			/*
                 AVISynth docs define the following:
@@ -56,12 +53,10 @@ namespace BeHappy.TimeStretch
 			else
 				m_strTimeStretchMethod = "pitch";
 		}
-
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        void LinkLblCalcLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		
+		void LinkLblCalcLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-            Debug.Assert(OperatingSystem.IsWindows());
-            errorProvider1.SetError(numCustom, string.Empty);
+			errorProvider1.SetError(numCustom, string.Empty);
 			decimal cval = 0;
 			try{
 				cval = (numCustomFrom.Value * 100) / numCustomTo.Value;
@@ -128,11 +123,11 @@ namespace BeHappy.TimeStretch
 			return "TimeStretch.dll";
 		}
 
-        #endregion
+		#endregion
 
-        #region ISupportConfiguration Members
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-        ConfigurationResult ISupportConfiguration.Configure(IWin32Window owner)
+		#region ISupportConfiguration Members
+
+		ConfigurationResult ISupportConfiguration.Configure(IWin32Window owner)
 		{
 			using (ConfigurationDialog f = new ConfigurationDialog())
 			{
