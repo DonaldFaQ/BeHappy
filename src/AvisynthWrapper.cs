@@ -423,6 +423,89 @@ namespace BeHappy
             return iVersion;
         }
 
+        /// <summary>
+        /// Detects if the AviSynth version can be used
+        /// </summary>
+        /// <returns>0 if everything is fine, 3 if the version is outdated or a different value for other errors</param>
+        public static int CheckAvisynthInstallation(out string strVersion, out bool bIsAVS26, out bool bIsAVSPlus, out bool bIsMT, out string strAviSynthDLL)
+        {
+            strVersion = "";
+            bIsAVS26 = false;
+            bIsAVSPlus = false;
+            bIsMT = false;
+            strAviSynthDLL = string.Empty;
+
+            IntPtr _avs = new IntPtr(0);
+            AVSDLLVideoInfo _vi = new AVSDLLVideoInfo();
+            AviSynthColorspace _colorSpace = AviSynthColorspace.Unknown;
+            AudioSampleType _sampleType = AudioSampleType.Unknown;
+
+            int iStartResult = -1;
+            try
+            {
+                iStartResult = dimzon_avs_init_2(ref _avs, "Eval", "Version()", ref _vi, ref _colorSpace, ref _sampleType, AviSynthColorspace.RGB24.ToString());
+
+                foreach (System.Diagnostics.ProcessModule module in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                {
+                    if (module.FileName.ToLowerInvariant().EndsWith("avisynth.dll"))
+                        strAviSynthDLL = module.FileName.ToLowerInvariant();
+                }
+
+                if (iStartResult == 0)
+                {
+                    int iWrapperVersion = GetAvisynthWrapperInterfaceVersion();
+                    try
+                    {
+                        const int errlen = 1024;
+                        StringBuilder sb = new StringBuilder(errlen);
+                        sb.Length = dimzon_avs_getstrfunction(_avs, "VersionString", sb, errlen);
+                        strVersion = sb.ToString();
+
+                        bool bResult = false;
+                        int iResult = dimzon_avs_functionexists(_avs, "AutoloadPlugins", ref bResult);
+                        bIsAVSPlus = false;
+                        if (iResult == 0)
+                            bIsAVSPlus = bResult;
+
+                        if (iWrapperVersion < 5)
+                        {
+                            bResult = false;
+                            iResult = dimzon_avs_functionexists(_avs, "ConvertToYV16", ref bResult);
+                            bIsAVS26 = false;
+                            if (iResult == 0)
+                                bIsAVS26 = bResult;
+                        }
+                        else
+                            bIsAVS26 = true;
+
+                        string strMTFunction = "Prefetch";
+                        if (!bIsAVSPlus)
+                            strMTFunction = "SetMTMode";
+                        bResult = false;
+                        iResult = dimzon_avs_functionexists(_avs, strMTFunction, ref bResult);
+                        bIsMT = false;
+                        if (iResult == 0)
+                            bIsMT = bResult;
+                    }
+                    catch (Exception ex)
+                    {
+                        //
+                    }
+                }
+
+                int iCloseResult = dimzon_avs_destroy(ref _avs);
+                if (_avs != IntPtr.Zero)
+                    CloseHandle(_avs);
+                _avs = IntPtr.Zero;
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+
+            return iStartResult;
+        }
+
         public AviSynthClip(string func, string arg, bool bRequireRGB24, bool bRunInThread)
         {
             _vi = new AVSDLLVideoInfo();
