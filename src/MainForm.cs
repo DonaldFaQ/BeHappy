@@ -670,9 +670,9 @@ namespace BeHappy
 			StringBuilder sb1 = new StringBuilder();
 			
 			if (GetFileInformation(Path.GetDirectoryName(Application.ExecutablePath) + @"\AvisynthWrapper.dll", out fileVersion, out fileDate, out fileProductName))
-				sb1.AppendFormat("{0}{1}#Avisynth Wrapper library v{2} found.", SEPARATOP, Environment.NewLine, fileVersion);
+				sb1.AppendFormat("{0}{1}# Avisynth Wrapper : {2}", SEPARATOP, Environment.NewLine, fileVersion);
 			else
-                sb1.AppendFormat("{0}{1}#Avisynth Wrapper library not installed.", SEPARATOP, Environment.NewLine);
+                sb1.AppendFormat("{0}{1}# Avisynth Wrapper library not installed.", SEPARATOP, Environment.NewLine);
 
             iResult = AviSynthClip.CheckAvisynthInstallation(out strVersion, out bIsAVS26, out bIsAVSPlus, out bIsMT, out string strAviSynthDLLSystem);
             if (GetFileInformation(strAviSynthDLLSystem, out avsVersion, out fileDate, out fileProductName))
@@ -680,11 +680,11 @@ namespace BeHappy
 				// file information
 				if (!String.IsNullOrEmpty(fileVersion))
 				{
-					sb1.AppendFormat("{0}#Avisynth library v{1} found.", Environment.NewLine, avsVersion);
-					sb1.AppendFormat("{0}#File path : {1}", Environment.NewLine, strAviSynthDLLSystem);
+					sb1.AppendFormat("{0}# Avisynth Library : {1}", Environment.NewLine, strVersion);
+					sb1.AppendFormat("{0}# File path : {1}", Environment.NewLine, strAviSynthDLLSystem);
 				}
 				else
-					sb1.AppendFormat("{0}#Avisynth library not found", Environment.NewLine);
+					sb1.AppendFormat("{0}# Avisynth library not found", Environment.NewLine);
                 
                 // avisynth information
                 if (iResult == 0)
@@ -692,28 +692,27 @@ namespace BeHappy
                     // yes, it can potentially be used
                     if (!String.IsNullOrEmpty(strVersion))
                     {
-                        sb1.AppendFormat("{0}#AviSynth Version {1}", Environment.NewLine, strVersion);
-                        sb1.AppendFormat("{0}#AviSynth+ {1}", Environment.NewLine, bIsAVSPlus ? "true" : "false", false);
-                        sb1.AppendFormat("{0}#AviSynth MT {1}{2}", Environment.NewLine, bIsMT ? "true" : "false", Environment.NewLine);
+                        sb1.AppendFormat("{0}# AviSynth+ = {1}", Environment.NewLine, bIsAVSPlus ? "true" : "false", false);
+                        sb1.AppendFormat("{0}# AviSynth MT = {1}{2}", Environment.NewLine, bIsMT ? "true" : "false", Environment.NewLine);
                     }
                     else
                     {
-                        sb1.AppendFormat("{0}#AviSynth Version ", "n/a", Environment.NewLine);
-                        sb1.AppendFormat("{0}#AviSynth+", "n/a", Environment.NewLine);
-                        sb1.AppendFormat("{0}#AviSynth MT", "n/a", Environment.NewLine);
+                        sb1.AppendFormat("{0}# AviSynth Version = ", "n/a", Environment.NewLine);
+                        sb1.AppendFormat("{0}# AviSynth+ = ", "n/a", Environment.NewLine);
+                        sb1.AppendFormat("{0}# AviSynth MT = ", "n/a", Environment.NewLine);
                     }
                 }
             }
             else
-                sb1.AppendFormat("{0}#AviSynth Status", "not installed", Environment.NewLine);
+                sb1.AppendFormat("{0}# AviSynth Status => ", "not installed", Environment.NewLine);
 
             string pluginDir = Path.Combine(getExeDirectory(), Environment.Is64BitProcess ? "plugins64" : "plugins32");
-			sb1.AppendFormat("{0}{1}#Created by {2} v{3}{1}#Creation timestamp: {4}{1}{0}{1}#Source FileName:{5}{1}#Target FileName:{6}{1}{0}{1}" , SEPARATOP, Environment.NewLine, Application.ProductName, Application.ProductVersion, DateTime.Now, sourceFileName, targetFileName);
+			sb1.AppendFormat("{0}{1}# Created by {2} v{3}{1}#Creation timestamp: {4}{1}{0}{1}# Source FileName:{5}{1}# Target FileName:{6}{1}{0}{1}" , SEPARATOP, Environment.NewLine, Application.ProductName, Application.ProductVersion, DateTime.Now, sourceFileName, targetFileName);
 			AudioSource source = lstAudioSource.SelectedItem as AudioSource;
 			if (!string.IsNullOrEmpty(source.AvsPlugin))
 			{
 				string pluginPath = Path.Combine(pluginDir, source.AvsPlugin);
-				sb1.AppendLine("#Source Plugin request: " + source.AvsPlugin);
+				sb1.AppendLine("# Source Plugin request: " + source.AvsPlugin);
 				if (File.Exists(pluginPath))
 					sb1.AppendFormat("LoadPlugin(\"{0}\"){1}", pluginPath, Environment.NewLine);
 				else sb1.AppendFormat("#\"{0}\" not found in \"{1}\"{2}", source.AvsPlugin, pluginDir, Environment.NewLine);
@@ -760,7 +759,7 @@ namespace BeHappy
 						if (!string.IsNullOrEmpty(dsp.AvsPlugin))
 						{
 							string pluginPath = Path.Combine(pluginDir, dsp.AvsPlugin);
-							sb1.AppendLine("#DSP Plugin request: " + dsp.AvsPlugin);
+							sb1.AppendLine("# DSP Plugin request: " + dsp.AvsPlugin);
 							if (File.Exists(pluginPath))
 								sb1.AppendFormat("LoadPlugin(\"{0}\"){1}", pluginPath, Environment.NewLine);
 							else sb1.AppendFormat("#\"{0}\" not found in \"{1}\"{2}", dsp.AvsPlugin, pluginDir, Environment.NewLine);
@@ -786,7 +785,7 @@ namespace BeHappy
 				if (!string.IsNullOrEmpty(enc.AvsPlugin))
 				{
 					string pluginPath = Path.Combine(pluginDir, enc.AvsPlugin);
-					sb1.AppendLine("#Encoder Plugin request: " + enc.AvsPlugin);
+					sb1.AppendLine("# Encoder Plugin request: " + enc.AvsPlugin);
 					if (File.Exists(pluginPath))
 						sb1.AppendFormat("LoadPlugin(\"{0}\"){1}", pluginPath, Environment.NewLine);
 					else sb1.AppendFormat("#\"{0}\" not found in \"{1}\"{2}", enc.AvsPlugin, pluginDir, Environment.NewLine);
