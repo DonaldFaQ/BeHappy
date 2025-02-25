@@ -4,7 +4,7 @@
 		<Plugin>
 			<MultiOptionSource Type="BeHappy.Extensions.MultiOptionSource, BeHappy">
 				<DialogWidth>250</DialogWidth>
-				<TitleFormatString>BestAudioSource - {0}</TitleFormatString>
+				<TitleFormatString>BSAudioSource - {0}</TitleFormatString>
 				<SupportedFileExtension>avi</SupportedFileExtension>
 				<SupportedFileExtension>mkv</SupportedFileExtension>
 				<SupportedFileExtension>webm</SupportedFileExtension>
@@ -25,8 +25,8 @@
 				<SupportedFileExtension>dtshd</SupportedFileExtension>
 				<SupportedFileExtension>thd</SupportedFileExtension>
 				<SupportedFileExtension>eac3</SupportedFileExtension>
-				<LoadAvsPlugin>BestAudioSource.dll</LoadAvsPlugin>
-				<Script>BestAudioSource("{0}", %options%)</Script>
+				<LoadAvsPlugin>BestSource.dll</LoadAvsPlugin>
+				<Script>BSAudioSource("{0}", %options%)</Script>
 				<Radiobutton Name="Apply DRC scale {0}">
 					<Value>drc_scale={0}</Value>
 					<Trackbar DefaultValue="0">
