@@ -777,6 +777,13 @@ namespace BeHappy
 					}
 				}
 			}
+
+			if (cbxChMask.Checked && numericUpDownChMask.Value != 0)
+			{
+                sb2.Append(SEPARATOP);
+                sb2.AppendFormat("{0}# [BeHappy: Set Channel Mask Value as {1} ]{0}SetChannelMask(\"{1}\"){0}{0}", Environment.NewLine, (long)numericUpDownChMask.Value);
+            }
+
 			sb2.AppendFormat("{0}{1}# [Encoder: {2}]{1}# [Command: {3} {4}{1}{0}{1}", SEPARATOP, Environment.NewLine, enc.Title,
 			                enc.ExecutableFileName, enc.GetExecutableArguments(Path.GetExtension(targetFileName).ToLower()));
 			
