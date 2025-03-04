@@ -9,6 +9,6 @@ BeHappy is designed mostly for movie audiotrack transcoding. It's a powerful BeL
 
 A rich selection of plugins is already integrated aswell most of the required encoder executables (except non redistributable encoders like most of the AAC encoders).
 
-As prerequisite a working AviSynth environment is required to use BeHappy. If you have no knowledge about AviSynth, simply use the [installer](http://sourceforge.net/projects/avisynth2/files/AviSynth%202.6/AviSynth%202.6.0/). 
+As prerequisite a working AviSynth environment is required to use BeHappy. If you have no knowledge about AviSynth/Avisynth+, simply use the installer from [there](https://github.com/AviSynth/AviSynthPlus/releases/latest). 
 
 For further help and some screenshots have a look at the [Wiki](https://github.com/jones1913/BeHappy/wiki).
