@@ -1,5 +1,11 @@
 ![BeHappy Logo](https://raw.githubusercontent.com/wiki/jones1913/behappy/images/bh_logo.png)  
 
+[![GitHub version](https://img.shields.io/github/v/release/Kurtnoise-zeus/BeHappy)](https://github.com/Kurtnoise-zeus/BeHappy/)
+![BeHappy number of downloads](https://img.shields.io/github/downloads/kurtnoise-zeus/BeHappy/latest/total.svg)
+[![download latest release](https://img.shields.io/badge/BeHappy-download-green?style=flat)](https://github.com/Kurtnoise-zeus/BeHappy/releases/latest) 
+
+
+
 BeHappy is an AviSynth-based audio transcoding tool written in C#.
 
 Originally created by dimzon at [doom9's forum](https://forum.doom9.org/showthread.php?t=104686) and hosted at [CodePlex](https://web.archive.org/web/20170407165223/https://behappy.codeplex.com/) ([via Internet Archive](https://archive.org)).
