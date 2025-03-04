@@ -20,4 +20,4 @@ As prerequisite a working AviSynth environment is required to use BeHappy. If yo
 For further help and some screenshots have a look at the [Wiki](https://github.com/jones1913/BeHappy/wiki).
 
 ## Kurtnoise fork
-I decided to fork the main tree in order to update the tool but also take back into action the latest features from Avisynth+ (i.e channel mask for audio transcoding).
+I decided to fork the main tree in order to update the tool but also take back into action the latest features from Avisynth+ (especially channel mask for audio transcoding).
