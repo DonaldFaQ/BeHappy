@@ -18,3 +18,6 @@ A rich selection of plugins is already integrated aswell most of the required en
 As prerequisite a working AviSynth environment is required to use BeHappy. If you have no knowledge about AviSynth/Avisynth+, simply use the installer from [there](https://github.com/AviSynth/AviSynthPlus/releases/latest). 
 
 For further help and some screenshots have a look at the [Wiki](https://github.com/jones1913/BeHappy/wiki).
+
+## Kurtnoise fork
+I decided to fork the main tree in order to update the tool but also take back into action the latest features from Avisynth+ (i.e channel mask for audio transcoding).
