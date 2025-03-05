@@ -667,7 +667,7 @@ namespace BeHappy
             bool bIsMT;
             int iResult;
             StringBuilder sb2 = new StringBuilder();
-			StringBuilder sb1 = new StringBuilder();
+			StringBuilder sb1 = new StringBuilder(); 
 			
 			if (GetFileInformation(Path.GetDirectoryName(Application.ExecutablePath) + @"\AvisynthWrapper.dll", out fileVersion, out fileDate, out fileProductName))
 				sb1.AppendFormat("{0}{1}# Avisynth Wrapper : {2}", SEPARATOP, Environment.NewLine, fileVersion);
@@ -778,11 +778,14 @@ namespace BeHappy
 				}
 			}
 
-			if (cbxChMask.Checked && numericUpDownChMask.Value != 0)
+			if (bIsAVSPlus)
 			{
-                sb2.Append(SEPARATOP);
-                sb2.AppendFormat("{0}# [BeHappy: Set Channel Mask Value as {1} ]{0}SetChannelMask(\"{1}\"){0}{0}", Environment.NewLine, (long)numericUpDownChMask.Value);
-            }
+				if (cbxChMask.Checked && numericUpDownChMask.Value != 0)
+				{
+					sb2.Append(SEPARATOP);
+					sb2.AppendFormat("{0}# [BeHappy: Set Channel Mask Value as {1} ]{0}SetChannelMask(\"{1}\"){0}{0}", Environment.NewLine, (long)numericUpDownChMask.Value);
+				}
+			}
 
 			sb2.AppendFormat("{0}{1}# [Encoder: {2}]{1}# [Command: {3} {4}{1}{0}{1}", SEPARATOP, Environment.NewLine, enc.Title,
 			                enc.ExecutableFileName, enc.GetExecutableArguments(Path.GetExtension(targetFileName).ToLower()));
