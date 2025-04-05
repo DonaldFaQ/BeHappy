@@ -120,5 +120,7 @@ namespace BeHappy
         public bool startJobsInstantlyChecked;
 		[XmlElement("VisualStyleColor")]
 		public bool visualStyleChecked = true;
+		[XmlElement("EncodersPath")]
+		public string encodersPath;
     }
 }
