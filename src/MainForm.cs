@@ -487,12 +487,10 @@ namespace BeHappy
 			if (c.MiscSettings != null)
 			{
 				this.ds_player = c.MiscSettings.directShowPlayer;
-//			else
-//				this.ds_player = "mplayer";
-		
 				this.btnPreview.Checked = c.MiscSettings.omitEncoderScriptChecked;
 				this.btnEnqueue.Checked = c.MiscSettings.startJobsInstantlyChecked;
 				this.cbxVisualStyle.Checked = c.MiscSettings.visualStyleChecked;
+				this.tbEncodersFolderPath.Text = c.MiscSettings.encodersPath;
 			}
 		}
 
@@ -609,6 +607,7 @@ namespace BeHappy
 				c.MiscSettings.omitEncoderScriptChecked = this.btnPreview.Checked;
 				c.MiscSettings.startJobsInstantlyChecked = this.btnEnqueue.Checked;
 				c.MiscSettings.visualStyleChecked = this.cbxVisualStyle.Checked;
+				c.MiscSettings.encodersPath = this.tbEncodersFolderPath.Text;
 				c.SaveToFile(getConfigFileName());
 			}
 			catch (Exception ex) {
