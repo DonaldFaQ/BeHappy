@@ -114,7 +114,8 @@ namespace BeHappy.TimeStretch
 
 		string IExtensionItemCommon.GetScript()
 		{
-			return string.Format(System.Globalization.CultureInfo.InvariantCulture,
+			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
+                                             "ConvertAudioToFloat()";
 			                     "TimeStretch(last, {0}={1})", this.c.Control, this.c.ActualTempo);
 		}
 		
