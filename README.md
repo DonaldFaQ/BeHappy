@@ -1,6 +1,6 @@
 ![BeHappy Logo](https://raw.githubusercontent.com/wiki/jones1913/behappy/images/bh_logo.png)  
 
-[![GitHub version](https://img.shields.io/github/v/release/Kurtnoise-zeus/BeHappy)](https://github.com/DonaldFaQ/BeHappy/)
+[![GitHub version](https://img.shields.io/github/v/release/DonaldFaQ/BeHappy)](https://github.com/DonaldFaQ/BeHappy/)
 ![BeHappy number of downloads](https://img.shields.io/github/downloads/DonaldFaQ/BeHappy/latest/total.svg)
 [![download latest release](https://img.shields.io/badge/BeHappy-download-green?style=flat)](https://github.com/DonaldFaQ/BeHappy/releases/latest) 
 
