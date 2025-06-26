@@ -2,7 +2,7 @@
 
 [![GitHub version](https://img.shields.io/github/v/release/Kurtnoise-zeus/BeHappy)](https://github.com/Kurtnoise-zeus/BeHappy/)
 ![BeHappy number of downloads](https://img.shields.io/github/downloads/kurtnoise-zeus/BeHappy/latest/total.svg)
-[![download latest release](https://img.shields.io/badge/BeHappy-download-green?style=flat)](https://github.com/Kurtnoise-zeus/BeHappy/releases/latest) 
+[![download latest release](https://img.shields.io/badge/BeHappy-download-green?style=flat)]([https://github.com/DonaldFaQ/BeHappy/releases/latest)
 
 
 
